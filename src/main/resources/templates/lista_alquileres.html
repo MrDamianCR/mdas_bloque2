@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Listado de alquileres</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      /* ESTILO GENERAL SIMILAR AL INDEX */
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2a3c;
+        margin: 24px;
+      }
+
+      h1 {
+        margin: 0 0 6px 0;
+        font-size: 2rem;
+      }
+
+      .muted {
+        color: #dbeafe;
+        font-size: 0.95rem;
+      }
+
+      /* CABECERA TIPO PANEL */
+      .alquileres-header {
+        background: linear-gradient(135deg, #0f5c9c, #1ca7ec);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+      }
+
+      .alquileres-header h1 {
+        color: #ffffff;
+        margin-bottom: 4px;
+      }
+
+      .alquileres-header .muted {
+        color: #e5f2ff;
+      }
+
+      /* ACCIONES / BOTONES SUPERIORES */
+      .actions {
+        margin: 10px 0 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      button,
+      a.button {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: 0.2s;
+      }
+
+      button:hover,
+      a.button:hover {
+        border-color: #0a79df;
+        box-shadow: 0 8px 18px rgba(15, 35, 68, 0.12);
+        transform: translateY(-1px);
+      }
+
+      button.primary {
+        background: #0a79df;
+        color: #ffffff;
+        border-color: #0a79df;
+        box-shadow: 0 8px 20px rgba(10, 121, 223, 0.35);
+      }
+
+      button.primary:hover {
+        background: #0867bd;
+      }
+
+      /* PANEL CONTENEDOR */
+      .panel {
+        border: 1px solid rgba(10, 121, 223, 0.06);
+        border-radius: 16px;
+        padding: 18px 18px 16px;
+        margin-top: 8px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+        font-size: 0.95rem;
+      }
+
+      /* TABLA ESTILO TARJETA */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 6px;
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 0.93rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .right {
+        text-align: right;
+      }
+
+      .muted-row {
+        color: #6b768c;
+        font-style: italic;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 640px) {
+        body {
+          margin: 16px;
+        }
+
+        table {
+          font-size: 0.85rem;
+        }
+
+        th,
+        td {
+          padding: 8px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- CABECERA SUPERIOR -->
+    <div class="alquileres-header">
+      <h1>Listado de alquileres</h1>
+      <p class="muted">
+        Historial y reservas de alquileres de embarcaciones del club.
+      </p>
+    </div>
+
+    <!-- BOTONES SUPERIORES -->
+    <div class="actions">
+      <a class="button" th:href="@{/}" style="font-size: 18px;">←</a>
+      <a class="button primary" th:href="@{/alquiler/crear}">Nuevo alquiler</a>
+    </div>
+
+    <!-- PANEL CON LA TABLA -->
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha inicio</th>
+            <th>Fecha fin</th>
+            <th>Plazas reservadas</th>
+            <th>Matrícula</th>
+            <th>DNI socio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="alq : ${alquileres}">
+            <!-- id -->
+            <td th:text="${alq.id}">1</td>
+
+            
+            <td th:text="${alq.fehca_inicio}">2025-01-01</td>
+
+            <td th:text="${alq.fecha_fin}">2025-01-03</td>
+            <td th:text="${alq.plazas_reservadas}">4</td>
+            <td th:text="${alq.matricula}">ABC123</td>
+            <td th:text="${alq.dni_socio}">12345678A</td>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(alquileres)}">
+            <td colspan="6" class="muted-row">
+              No hay alquileres.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

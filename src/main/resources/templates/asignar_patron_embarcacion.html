@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Asignar patrón a embarcación</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      /* ===== ESTILO GENERAL ===== */
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2a3c;
+        margin: 24px;
+      }
+
+      .muted {
+        color: #6b768c;
+        font-size: 0.92rem;
+      }
+
+      .embarcaciones-header {
+        background: linear-gradient(135deg, #0f5c9c, #1ca7ec);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+      }
+
+      .embarcaciones-header h1 {
+        margin: 0 0 4px;
+        font-size: 1.9rem;
+        color: #ffffff;
+      }
+
+      .embarcaciones-header p {
+        margin: 0;
+        color: #e5f2ff;
+        font-size: 0.95rem;
+      }
+
+      /* ===== PANEL GENÉRICO ===== */
+      .panel {
+        border: 1px solid rgba(10, 121, 223, 0.08);
+        border-radius: 16px;
+        padding: 18px 18px 16px;
+        margin-top: 18px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+        font-size: 0.95rem;
+      }
+
+      .panel h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        color: #1f2a3c;
+      }
+
+      /* PANEL ERROR */
+      .panel-error {
+        background: #fff1f2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+
+      /* ===== GRID DATOS EMBARCACIÓN ===== */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(240px, 1fr));
+        gap: 14px;
+        margin-top: 6px;
+      }
+
+      .grid > div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.9rem;
+      }
+
+      .grid strong {
+        color: #374151;
+      }
+
+      select,
+      input[type="text"] {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        background: #ffffff;
+        font-size: 0.9rem;
+        transition: 0.2s;
+      }
+
+      select:focus,
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #0a79df;
+        box-shadow: 0 0 0 2px rgba(10, 121, 223, 0.15);
+      }
+
+      /* ===== BOTONES ===== */
+      button,
+      a.button {
+        padding: 9px 18px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: 0.25s;
+      }
+
+      button:hover,
+      a.button:hover {
+        border-color: #0a79df;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 35, 68, 0.12);
+      }
+
+      button.primary {
+        background: #0a79df;
+        color: #ffffff;
+        border-color: #0a79df;
+        box-shadow: 0 8px 20px rgba(10, 121, 223, 0.35);
+      }
+
+      button.primary:hover {
+        background: #0867bd;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 768px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        body {
+          margin: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- PANEL SUPERIOR -->
+    <div class="embarcaciones-header">
+      <h1>Asignar patrón a embarcación</h1>
+      <p>
+        Selecciona un patrón disponible y asígnalo a la embarcación indicada.
+      </p>
+    </div>
+
+    <!-- ERROR -->
+    <div
+      th:if="${error}"
+      class="panel panel-error"
+      th:text="${error}"
+    ></div>
+
+    <!-- DATOS DE LA EMBARCACIÓN -->
+    <div class="panel">
+      <h2>Datos de la embarcación</h2>
+      <div class="grid">
+        <div>
+          <strong>Matrícula</strong>
+          <span th:text="${embarcacion.matricula}">1234-ABC</span>
+        </div>
+        <div>
+          <strong>Nombre</strong>
+          <span th:text="${embarcacion.nombre}">Mi barco</span>
+        </div>
+        <div>
+          <strong>Tipo</strong>
+          <span th:text="${embarcacion.tipo}">Vela</span>
+        </div>
+        <div>
+          <strong>Patrón actual</strong>
+          <span th:if="${embarcacion.dni_patron == null}" class="muted">Sin patrón asignado</span>
+          <span th:if="${embarcacion.dni_patron != null}" th:text="${embarcacion.dni_patron}">00000000A</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SELECCIONAR NUEVO PATRÓN -->
+    <div class="panel" style="margin-top: 16px">
+      <h2>Seleccionar nuevo patrón</h2>
+
+      <p class="muted" th:if="${#lists.isEmpty(patronesLibres)}">
+        No hay patrones libres disponibles actualmente.
+      </p>
+
+      <form
+        th:if="${!#lists.isEmpty(patronesLibres)}"
+        th:action="@{/embarcaciones/asignar-patron}"
+        method="post"
+      >
+        <!-- Matrícula de la embarcación -->
+        <input type="hidden" name="matricula" th:value="${embarcacion.matricula}" />
+
+        <label style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; font-size: 0.9rem;">
+          Nuevo patrón
+          <select name="dniPatronNuevo" required>
+            <option value="" disabled selected>Selecciona un patrón</option>
+            <option th:each="p : ${patronesLibres}"
+                    th:value="${p.dni_patron}"
+                    th:text="${p.dni_patron + ' - ' + p.nombre + ' ' + p.apellidos}">
+              00000000A - Nombre Apellidos
+            </option>
+          </select>
+        </label>
+
+        <!-- Confirmar reemplazo si ya tenía patrón -->
+        <div th:if="${embarcacion.dni_patron != null}" style="margin-bottom: 12px">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" name="confirmarReemplazo" value="true" />
+            Confirmo que quiero sustituir al patrón actual.
+          </label>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; gap: 10px">
+          <button type="submit" class="primary">Guardar</button>
+          <a class="button" th:href="@{/embarcaciones/listar}">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
