@@ -47,20 +47,20 @@ public class ActividadController {
     /* ===== PROCESAR FORMULARIO (POST /actividades/crear) ===== */
     @PostMapping("/crear")
     public String crearActividad(
+            // Mejora de codigo
             @RequestParam("matricula") String matricula,
             @RequestParam("dniSocio") String dniSocio,
             @RequestParam("plazas") int plazas,
             @RequestParam("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha,
             @RequestParam("descripcion") String descripcion,
-            RedirectAttributes ra
-    ) {
+            RedirectAttributes redirectAttributes) {
         try {
             actividadService.crearActividad(dniSocio, matricula, fecha, plazas, descripcion);
-            ra.addFlashAttribute("ok", "Actividad creada correctamente.");
+            redirectAttributes.addFlashAttribute("ok", "Actividad creada correctamente.");
             return "redirect:/actividades/listar";
         } catch (Exception ex) {
             ex.printStackTrace();
-            ra.addFlashAttribute("error", "Error creando la actividad: " + ex.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error creando la actividad: " + ex.getMessage());
             return "redirect:/actividades/crear";
         }
     }

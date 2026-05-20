@@ -44,7 +44,9 @@ public class EmbarcacionRepository {
         try {
             String query = sqlQueries.getProperty("select-findAllEmbarcaciones");
             if (query != null) {
-                List<Embarcacion> result = jdbcTemplate.query(query, new RowMapper<Embarcacion>() {
+
+                // Mejora de codigo
+                List<Embarcacion> resultEmbarcaciones = jdbcTemplate.query(query, new RowMapper<Embarcacion>() {
                     @Override
                     public Embarcacion mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new Embarcacion(
@@ -56,7 +58,7 @@ public class EmbarcacionRepository {
                                 rs.getString("dni_patron"));
                     }
                 });
-                return result;
+                return resultEmbarcaciones;
             } else {
                 return null;
             }
@@ -202,8 +204,8 @@ public class EmbarcacionRepository {
     }
 
     public boolean existsByMatricula(String matricula) {
-        String sql = "SELECT COUNT(*) FROM Embarcacion WHERE matricula = ?";
-        Integer n = jdbcTemplate.queryForObject(sql, Integer.class, matricula);
+        String query = "SELECT COUNT(*) FROM Embarcacion WHERE matricula = ?";
+        Integer n = jdbcTemplate.queryForObject(query, Integer.class, matricula);
         return n != null && n > 0;
     }
 
