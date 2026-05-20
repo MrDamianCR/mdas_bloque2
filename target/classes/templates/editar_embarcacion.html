@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Editar Embarcación</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      /* ===== ESTILO GENERAL ===== */
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2a3c;
+        margin: 24px;
+      }
+
+      /* ===== PANEL SUPERIOR ===== */
+      .embarcaciones-header {
+        background: linear-gradient(135deg, #0f5c9c, #1ca7ec);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+      }
+
+      .embarcaciones-header h1 {
+        margin: 0 0 4px;
+        font-size: 1.9rem;
+        color: #ffffff;
+      }
+
+      .embarcaciones-header p {
+        color: #e5f2ff;
+        font-size: 0.95rem;
+      }
+
+      /* ===== PANEL GENERAL ===== */
+      .panel {
+        border: 1px solid rgba(10, 121, 223, 0.08);
+        border-radius: 16px;
+        padding: 18px;
+        margin-top: 18px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+      }
+
+      .panel-error {
+        background: #fff1f2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+
+      /* ===== FORMULARIO ===== */
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.9rem;
+        color: #374151;
+        margin-top: 10px;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        background: #ffffff;
+        font-size: 0.95rem;
+        transition: 0.2s;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus {
+        outline: none;
+        border-color: #0a79df;
+        box-shadow: 0 0 0 2px rgba(10, 121, 223, 0.15);
+      }
+
+      /* GRID */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(240px, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      /* ===== BOTONES ===== */
+      button,
+      a.button {
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: 0.25s;
+      }
+
+      button:hover,
+      a.button:hover {
+        border-color: #0a79df;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 35, 68, 0.12);
+      }
+
+      button.primary {
+        background: #0a79df;
+        color: #ffffff;
+        border-color: #0a79df;
+        box-shadow: 0 8px 20px rgba(10, 121, 223, 0.35);
+      }
+
+      button.primary:hover {
+        background: #0867bd;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- PANEL SUPERIOR -->
+    <div class="embarcaciones-header">
+      <h1>Editar Embarcación</h1>
+      <p>Modifica los datos asociados a esta embarcación del club.</p>
+    </div>
+
+    <!-- ERROR -->
+    <div th:if="${error}" class="panel panel-error" th:text="${error}"></div>
+
+    <!-- FORMULARIO -->
+    <form
+      th:action="@{/embarcaciones/actualizar}"
+      th:object="${embarcacion}"
+      method="post"
+      class="panel"
+    >
+      <!-- Matrícula (PK) -->
+      <label>
+        Matrícula
+        <input type="text" th:field="*{matricula}" readonly />
+      </label>
+
+      <div class="grid">
+        <label>
+          Tipo
+          <input type="text" th:field="*{tipo}" required />
+        </label>
+
+        <label>
+          Nombre
+          <input type="text" th:field="*{nombre}" required />
+        </label>
+
+        <label>
+          Número de plazas
+          <input type="number" th:field="*{numeroPlazas}" min="1" required />
+        </label>
+
+        <label>
+          Dimensiones
+          <input type="text" th:field="*{dimensiones}" />
+        </label>
+
+        <label>
+          DNI patrón
+          <input type="text" th:field="*{dni_patron}" required />
+        </label>
+      </div>
+
+      <div style="margin-top: 20px; display: flex; gap: 12px;">
+        <button type="submit" class="primary">Guardar cambios</button>
+        <a class="button" th:href="@{/embarcaciones/listar}">Cancelar</a>
+      </div>
+    </form>
+  </body>
+</html>

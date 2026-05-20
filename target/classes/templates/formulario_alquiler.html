@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nuevo alquiler</title>
+
+    <!-- Fuente similar al index -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      /* ESTILO GENERAL SIMILAR AL INDEX */
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2a3c;
+        margin: 24px;
+      }
+
+      h1 {
+        margin: 0 0 6px 0;
+        font-size: 2rem;
+      }
+
+      .muted {
+        color: #dbeafe;
+        font-size: 0.95rem;
+      }
+
+      /* PANEL SUPERIOR TIPO INDEX */
+      .alquiler-header {
+        background: linear-gradient(135deg, #0f5c9c, #1ca7ec);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+      }
+
+      .alquiler-header h1 {
+        color: #ffffff;
+        margin-bottom: 4px;
+      }
+
+      .alquiler-header .muted {
+        color: #e5f2ff;
+      }
+
+      /* ACCIONES / BARRA SUPERIOR DE BOTONES */
+      .actions {
+        margin: 10px 0 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="date"] {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        background: #ffffff;
+        transition: 0.2s;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      input[type="date"]:focus {
+        outline: none;
+        border-color: #0a79df;
+        box-shadow: 0 0 0 2px rgba(10, 121, 223, 0.15);
+      }
+
+      /* BOTONES (SIMILAR A .btn DEL INDEX) */
+      button,
+      a.button {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: 0.2s;
+      }
+
+      button:hover,
+      a.button:hover {
+        border-color: #0a79df;
+        box-shadow: 0 8px 18px rgba(15, 35, 68, 0.12);
+        transform: translateY(-1px);
+      }
+
+      button.primary {
+        background: #0a79df;
+        color: #ffffff;
+        border-color: #0a79df;
+        box-shadow: 0 8px 20px rgba(10, 121, 223, 0.35);
+      }
+
+      button.primary:hover {
+        background: #0867bd;
+      }
+
+      /* PANEL GENÉRICO */
+      .panel {
+        border: 1px solid rgba(10, 121, 223, 0.06);
+        border-radius: 16px;
+        padding: 18px 18px 16px;
+        margin-top: 24px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+        font-size: 0.95rem;
+      }
+
+      .panel h2 {
+        margin: 0 0 6px 0;
+        font-size: 1.2rem;
+      }
+
+      .muted-small {
+        font-size: 0.85rem;
+        color: #6b768c;
+        margin-top: 4px;
+      }
+
+      /* LISTADO (TABLA) ESTILO TARJETA */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 0.93rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* GRID DEL FORMULARIO */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .grid > label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: #374151;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 960px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(220px, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          margin: 16px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        table {
+          font-size: 0.85rem;
+        }
+
+        th,
+        td {
+          padding: 8px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- CABECERA SUPERIOR -->
+    <div class="alquiler-header">
+      <h1>Nuevo alquiler</h1>
+      <p class="muted">
+        Crea un nuevo alquiler de embarcación. La búsqueda de disponibilidad es opcional, a modo de ayuda.
+      </p>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="actions">
+      <a class="button" th:href="@{/}" style="font-size: 18px;">←</a>
+      <a class="button" th:href="@{/alquiler/listar}">Ver alquileres</a>
+      <a class="button" th:href="@{/embarcaciones/listar}">Ver embarcaciones</a>
+    </div>
+
+    <!-- PANEL 1: BUSCAR DISPONIBLES (OPCIONAL) -->
+    <div class="panel">
+      <h2>Buscar embarcaciones disponibles (opcional)</h2>
+      <p class="muted-small">
+        Si lo deseas, puedes comprobar qué embarcaciones están libres en un rango de fechas
+        antes de rellenar el alquiler.
+      </p>
+
+      <!-- GET /alquiler/crear con inicioDisp y finDisp -->
+      <form th:action="@{/alquiler/crear}" method="get">
+        <div class="grid">
+          <label>
+            Fecha de inicio
+            <input type="date" name="inicioDisp" th:value="${inicioDisp}" />
+          </label>
+          <label>
+            Fecha de fin
+            <input type="date" name="finDisp" th:value="${finDisp}" />
+          </label>
+        </div>
+        <div style="margin-top: 12px">
+          <button type="submit" class="primary">Buscar disponibles</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PANEL 2: RESULTADOS DE DISPONIBLES -->
+    <div class="panel" th:if="${disponibles != null}">
+      <h2>Embarcaciones disponibles</h2>
+
+      <table th:if="${!#lists.isEmpty(disponibles)}">
+        <thead>
+          <tr>
+            <th>Matrícula</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Nº plazas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="e : ${disponibles}">
+            <td th:text="${e.matricula}">1234-ABC</td>
+            <td th:text="${e.nombre}">Velero 1</td>
+            <td th:text="${e.tipo}">Vela</td>
+            <td th:text="${e.numeroPlazas}">4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="muted-small" th:if="${#lists.isEmpty(disponibles)}">
+        No se han encontrado embarcaciones disponibles para ese rango de fechas.
+      </p>
+    </div>
+
+    <!-- PANEL 3: FORMULARIO REAL DE ALQUILER (SIEMPRE VISIBLE) -->
+    <div class="panel">
+      <h2>Datos del alquiler</h2>
+      <p class="muted-small">
+        Rellena los datos del alquiler. La matrícula debe corresponder a una embarcación existente
+        y el socio debe estar registrado.
+      </p>
+
+      <!-- POST /alquiler/crear -->
+      <form th:action="@{/alquiler/crear}" method="post">
+        <div class="grid">
+          <label>
+            Matrícula de la embarcación
+            <input type="text" name="matricula" required />
+          </label>
+          <label>
+            DNI del socio
+            <input type="text" name="dniSocio" required />
+          </label>
+          <label>
+            Plazas reservadas
+            <input type="number" name="plazas" min="1" required />
+          </label>
+          <label>
+            Fecha de inicio
+            <input type="date" name="inicio" th:attr="min=${hoy}" required />
+          </label>
+          <label>
+            Fecha de fin
+            <input type="date" name="fin" th:attr="min=${hoy}" required />
+          </label>
+        </div>
+        <div style="margin-top: 12px">
+          <button type="submit" class="primary">Crear alquiler</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

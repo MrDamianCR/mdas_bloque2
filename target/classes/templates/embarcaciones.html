@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gestión de Embarcaciones</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2a3c;
+        margin: 24px;
+      }
+
+      h1 {
+        margin: 0 0 6px 0;
+        font-size: 2rem;
+      }
+
+      .muted {
+        color: #dbeafe;
+        font-size: 0.95rem;
+      }
+
+      
+      .embarcaciones-header {
+        background: linear-gradient(135deg, #0f5c9c, #1ca7ec);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+      }
+
+      .embarcaciones-header h1 {
+        color: #ffffff;
+        margin-bottom: 4px;
+      }
+
+      .embarcaciones-header .muted {
+        color: #e5f2ff;
+      }
+
+      /* ACCIONES / BARRA SUPERIOR DE BOTONES Y BÚSQUEDA */
+      .actions {
+        margin: 10px 0 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        background: #ffffff;
+        transition: 0.2s;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus {
+        outline: none;
+        border-color: #0a79df;
+        box-shadow: 0 0 0 2px rgba(10, 121, 223, 0.15);
+      }
+
+      /* BOTONES (SIMILAR A .btn DEL INDEX) */
+      button,
+      a.button {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: 0.2s;
+      }
+
+      button:hover,
+      a.button:hover {
+        border-color: #0a79df;
+        box-shadow: 0 8px 18px rgba(15, 35, 68, 0.12);
+        transform: translateY(-1px);
+      }
+
+      button.primary {
+        background: #0a79df;
+        color: #ffffff;
+        border-color: #0a79df;
+        box-shadow: 0 8px 20px rgba(10, 121, 223, 0.35);
+      }
+
+      button.primary:hover {
+        background: #0867bd;
+      }
+
+      /* PANEL GENÉRICO (MENSAJES Y FORMULARIO ABAJO) */
+      .panel {
+        border: 1px solid rgba(10, 121, 223, 0.06);
+        border-radius: 16px;
+        padding: 18px 18px 16px;
+        margin-top: 24px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+        font-size: 0.95rem;
+      }
+
+      /* PANEL DE ERROR ESPECIAL */
+      .panel-error {
+        background: #fff1f2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+
+      /* LISTADO (TABLA) ESTILO TARJETA */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 0.93rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .right {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      /* GRID DEL FORMULARIO DE ALTA */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(220px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .grid > label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: #374151;
+      }
+
+      form.inline {
+        display: inline;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 960px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(220px, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          margin: 16px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        table {
+          font-size: 0.85rem;
+        }
+
+        th,
+        td {
+          padding: 8px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="embarcaciones-header">
+      <h1>Gestión de Embarcaciones</h1>
+      <p class="muted">
+        Listado, alta, edición y eliminación de embarcaciones del club.
+      </p>
+    </div>
+
+    <div class="actions">
+      <a class="button" th:href="@{/}" style="font-size: 18px;">←</a>
+      <a class="button" th:href="@{/embarcaciones/listar}">Refrescar lista</a>
+
+      <!-- Búsqueda por matrícula -->
+      <form th:action="@{/embarcaciones/buscar}" method="get" class="row">
+        <input type="text" name="matricula" placeholder="Buscar por matrícula" />
+        <button type="submit">Buscar</button>
+      </form>
+
+      <!-- Búsqueda por tipo -->
+      <form th:action="@{/embarcaciones/buscar-tipo}" method="get" class="row">
+        <input type="text" name="tipo" placeholder="Buscar por tipo (ej: Vela, Lancha...)" />
+        <button type="submit">Buscar tipo</button>
+      </form>
+    </div>
+
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" class="panel" th:text="${mensaje}"></div>
+    <div
+      th:if="${error}"
+      class="panel panel-error"
+      th:text="${error}"
+    ></div>
+
+    <!-- LISTADO -->
+    <table>
+      <thead>
+        <tr>
+          <th>Matrícula</th>
+          <th>Tipo</th>
+          <th>Nombre</th>
+          <th>Nº plazas</th>
+          <th>Dimensiones</th>
+          <th>DNI patrón</th>
+          <th class="right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="e : ${embarcaciones}">
+          <td th:text="${e.matricula}">1234-ABC</td>
+          <td th:text="${e.tipo}">Vela</td>
+          <td th:text="${e.nombre}">Mi barco</td>
+          <td th:text="${e.numeroPlazas}">4</td>
+          <td th:text="${e.dimensiones}">6m x 2m</td>
+          <td th:text="${e.dni_patron}">00000000A</td>
+          <td class="right">
+            <!-- EDITAR: GET /embarcaciones/editar/{matricula} -->
+            <a
+              class="button"
+              th:href="@{|/embarcaciones/editar/${e.matricula}|}"
+            >Editar</a>
+
+            <!-- ASIGNAR / CAMBIAR PATRÓN -->
+            <a
+              class="button"
+              th:href="@{|/embarcaciones/asignar-patron/${e.matricula}|}"
+            >Asignar patrón</a>
+
+            <!-- ELIMINAR: POST /embarcaciones/eliminar con matrícula como parámetro -->
+            <form
+              class="inline"
+              th:action="@{/embarcaciones/eliminar}"
+              method="post"
+              onsubmit="return confirm('¿Eliminar la embarcación con matrícula ' + this.matricula.value + '?')"
+            >
+              <input type="hidden" name="matricula" th:value="${e.matricula}" />
+              <button type="submit">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        <tr th:if="${embarcaciones == null or #lists.isEmpty(embarcaciones)}">
+          <td colspan="7" class="muted" style="color:#6b768c;">No hay embarcaciones que mostrar.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ALTA DE NUEVA EMBARCACIÓN: POST /embarcaciones/registrar -->
+    <div class="panel">
+      <h2 style="margin-bottom: 6px;">Registrar nueva embarcación</h2>
+      <form th:action="@{/embarcaciones/registrar}" method="post">
+        <div class="grid">
+          <label>
+            Matrícula
+            <input type="text" name="matricula" required />
+          </label>
+          <label>
+            Tipo
+            <input type="text" name="tipo" required />
+          </label>
+          <label>
+            Nombre
+            <input type="text" name="nombre" required />
+          </label>
+          <label>
+            Número de plazas
+            <input type="number" name="numeroPlazas" min="1" required />
+          </label>
+          <label>
+            Dimensiones
+            <input type="text" name="dimensiones" />
+          </label>
+          <label>
+            DNI patrón
+            <input type="text" name="dni_patron" required />
+          </label>
+        </div>
+        <div style="margin-top: 12px">
+          <button type="submit" class="primary">Registrar</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

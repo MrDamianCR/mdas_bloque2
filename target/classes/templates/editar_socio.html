@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Editar Socio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2a3c;
+        margin: 24px;
+      }
+
+      .page-header {
+        background: linear-gradient(135deg, #0f5c9c, #1ca7ec);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+      }
+
+      .page-header h1 {
+        margin: 0 0 4px;
+        font-size: 1.8rem;
+      }
+
+      .page-header p {
+        margin: 0;
+        color: #e5f2ff;
+        font-size: 0.95rem;
+      }
+
+      .actions {
+        margin: 10px 0 16px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      button,
+      a.button {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: 0.25s;
+      }
+
+      button:hover,
+      a.button:hover {
+        border-color: #0a79df;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 35, 68, 0.12);
+      }
+
+      button.primary {
+        background: #0a79df;
+        color: #ffffff;
+        border-color: #0a79df;
+        box-shadow: 0 8px 20px rgba(10, 121, 223, 0.35);
+      }
+
+      button.primary:hover {
+        background: #0867bd;
+      }
+
+      .panel {
+        border: 1px solid rgba(10, 121, 223, 0.06);
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-top: 8px;
+        background: #ffffff;
+        box-shadow: 0 10px 25px rgba(15, 35, 68, 0.08);
+        font-size: 0.95rem;
+      }
+
+      .panel-error {
+        background: #fff1f2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 12px;
+      }
+
+      .grid > label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 0.9rem;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      select {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        background: #ffffff;
+        transition: 0.2s;
+      }
+
+      input[type="text"]:focus,
+      input[type="date"]:focus,
+      select:focus {
+        outline: none;
+        border-color: #0a79df;
+        box-shadow: 0 0 0 2px rgba(10, 121, 223, 0.15);
+      }
+
+      .row-check {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(180px, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          margin: 16px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-header">
+      <h1>Editar socio</h1>
+      <p>Modifica los datos del socio seleccionado.</p>
+    </div>
+
+    <div class="actions">
+      <a class="button" th:href="@{/socios/listar}">← Volver a socios</a>
+    </div>
+
+    <div
+      th:if="${error}"
+      class="panel panel-error"
+      th:text="${error}"
+    ></div>
+
+    <form
+      th:action="@{/socios/actualizar}"
+      th:object="${socio}"
+      method="post"
+      class="panel"
+    >
+      <!-- DNI es la PK → readonly -->
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem;">
+        DNI
+        <input type="text" th:field="*{dni}" readonly />
+      </label>
+
+      <div class="grid" style="margin-top: 12px">
+        <label>
+          Nombre
+          <input type="text" th:field="*{nombre}" required />
+        </label>
+        <label>
+          Apellidos
+          <input type="text" th:field="*{apellidos}" required />
+        </label>
+        <label>
+          Dirección
+          <input type="text" th:field="*{direccion}" required />
+        </label>
+
+        <label>
+          Fecha de nacimiento
+          <input
+            type="date"
+            name="fecha_nacimiento"
+            th:value="${#temporals.format(socio.fecha_nacimiento, 'yyyy-MM-dd')}"
+          />
+        </label>
+
+        <label>
+          Fecha de inscripción
+          <input
+            type="date"
+            name="fecha_inscripcion"
+            th:value="${#temporals.format(socio.fecha_inscripcion, 'yyyy-MM-dd')}"
+          />
+        </label>
+
+        <label>
+          ¿Es patrón?
+          <div class="row-check">
+            <input type="checkbox" th:field="*{es_patron}" />
+            <span class="muted">Marcar si el socio es patrón del club</span>
+          </div>
+        </label>
+
+        <label>
+          Inscripción
+          <select th:field="*{id_inscripcion}">
+            <option value="">-- Selecciona inscripción --</option>
+            <option
+              th:each="ins : ${inscripciones}"
+              th:value="${ins.id}"
+              th:text="${ins.id + ' - ' + ins.tipo + ' (' + ins.fecha_creacion + ')'}"
+            ></option>
+          </select>
+        </label>
+
+        <label>
+          Rol
+          <select th:field="*{rol}" required>
+            <option value="Titular">Titular</option>
+            <option value="Adulto_Adicional">Adulto adicional</option>
+            <option value="Hijo">Hijo</option>
+          </select>
+        </label>
+      </div>
+
+      <div style="margin-top: 16px; display: flex; gap: 10px">
+        <button type="submit" class="primary">Guardar cambios</button>
+        <a class="button" th:href="@{/socios/listar}">Cancelar</a>
+      </div>
+    </form>
+  </body>
+</html>

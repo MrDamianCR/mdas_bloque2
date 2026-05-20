@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Club Náutico</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<!-- ===== BARRA SUPERIOR ===== -->
+<header class="topbar">
+    <div class="logo">
+        <span class="logo-icon">⛵</span>
+        <span class="logo-text">Club Náutico</span>
+    </div>
+    <nav class="topnav">
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/alquiler/listar}">Alquileres</a>
+        <a th:href="@{/embarcaciones/listar}">Embarcaciones</a>
+        <a th:href="@{/socios/listar}">Socios</a>
+    </nav>
+</header>
+
+<section class="hero-ocean">
+    <div class="hero-ocean-inner">
+        <div class="hero-ocean-text">
+            <h1>El mar del club, en una sola pantalla</h1>
+            <p>
+                Gestiona socios, embarcaciones, reservas y actividades desde un panel pensado
+                para el día a día del puerto: rápido, visual y siempre disponible.
+            </p>
+        </div>
+        <div class="hero-ocean-summary">
+            <h3>Accesos rápidos</h3>
+            <ul>
+                <li><a th:href="@{/alquiler/listar}">Alquileres activos</a></li>
+                <li><a th:href="@{/embarcaciones/listar}">Flota disponible</a></li>
+                <li><a th:href="@{/actividades/listar}">Próximas actividades</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SECCIÓN DE CARDS ===== -->
+<section class="features">
+    <h2>¿Qué ofrece este sistema?</h2>
+    <p class="features-subtitle">
+        Una consola única para coordinar el club: operaciones, socios y embarcaciones conectados
+        en tiempo real para que todo fluya igual de bien que en el muelle.
+    </p>
+
+    <div class="features-grid">
+
+        <article class="feature-card">
+            <div class="feature-icon">📅</div>
+            <h3>Gestión de alquileres</h3>
+            <p>
+                Controla todas las reservas del club de forma ordenada y profesional.
+            </p>
+            <a th:href="@{/alquiler/listar}" class="feature-link">Ver alquileres →</a>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">🛥️</div>
+            <h3>Control de embarcaciones</h3>
+            <p>
+                Consulta y administra toda la flota disponible en el club.
+            </p>
+            <a th:href="@{/embarcaciones/listar}" class="feature-link">Ver embarcaciones →</a>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">👤</div>
+            <h3>Gestión de socios</h3>
+            <p>
+                Mantén organizada toda la información de los miembros del club.
+            </p>
+            <a th:href="@{/socios/listar}" class="feature-link">Ver socios →</a>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>Gestión de inscripciones</h3>
+            <p>
+                Administra inscripciones en cursos, eventos y actividades especiales.
+            </p>
+            <a th:href="@{/inscripciones/listar}" class="feature-link">Ver inscripciones →</a>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">🧭</div>
+            <h3>Listado de patrones</h3>
+            <p>
+                Consulta a los patrones habilitados en el club.
+            </p>
+            <a th:href="@{/patrones/listar}" class="feature-link">Ver patrones →</a>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">🚤</div>
+            <h3>Actividades del club</h3>
+            <p>
+                Organiza y supervisa actividades marítimas con total control.
+            </p>
+            <a th:href="@{/actividades/crear}" class="feature-link">Organizar actividad →</a><br>
+            <a th:href="@{/actividades/listar}" class="feature-link">Ver actividades →</a>
+        </article>
+
+    </div>
+</section>
+
+<section class="workflow">
+    <div class="workflow-inner">
+        <h2>Una rutina de trabajo pensada para el puerto</h2>
+        <p>
+            La plataforma centraliza la operativa del club para que cada jornada sea más sencilla:
+            revisa el estado del día, realiza cambios sobre la marcha y deja todo listo para la siguiente marea.
+        </p>
+
+        <div class="workflow-grid">
+            <div class="workflow-step">
+                <span class="workflow-number">1</span>
+                <h3>Revisa el día</h3>
+                <p>
+                    Comprueba las reservas, la ocupación de la flota y las actividades programadas.
+                </p>
+            </div>
+            <div class="workflow-step">
+                <span class="workflow-number">2</span>
+                <h3>Gestiona cambios</h3>
+                <p>
+                    Actualiza datos de socios, ajusta horarios y asigna patrones según la demanda.
+                </p>
+            </div>
+            <div class="workflow-step">
+                <span class="workflow-number">3</span>
+                <h3>Prepara la próxima salida</h3>
+                <p>
+                    Deja registradas nuevas actividades y reservas para que el club nunca se detenga.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="main-footer">
+    <p>© 2025 · Club Náutico · Plataforma de gestión y servicios.</p>
+</footer>
+
+</body>
+</html>

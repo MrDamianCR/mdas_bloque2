@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Listado de actividades</title>
+
+    <!-- Fuente Poppins como en patrones -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2a3c;
+        margin: 24px;
+      }
+
+      .muted {
+        color: #6b768c;
+        font-size: 0.92rem;
+      }
+
+      /* CABECERA */
+      .activities-header {
+        background: linear-gradient(135deg, #0f5c9c, #1ca7ec);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+      }
+
+      .activities-header h1 {
+        margin: 0 0 4px;
+        font-size: 1.9rem;
+      }
+
+      .activities-header p {
+        margin: 0;
+        color: #e5f2ff;
+        font-size: 0.95rem;
+      }
+
+      /* ACCIONES / BOTONES */
+      .actions {
+        margin: 10px 0 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      button,
+      a.button {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: 0.25s;
+      }
+
+      button:hover,
+      a.button:hover {
+        border-color: #0a79df;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 35, 68, 0.12);
+      }
+
+      button.primary {
+        background: #0a79df;
+        color: #ffffff;
+        border-color: #0a79df;
+        box-shadow: 0 8px 20px rgba(10, 121, 223, 0.35);
+      }
+
+      button.primary:hover {
+        background: #0867bd;
+      }
+
+      /* PANEL / TARJETA */
+      .panel {
+        border: 1px solid rgba(10, 121, 223, 0.06);
+        border-radius: 16px;
+        padding: 16px 20px 20px;
+        margin-top: 8px;
+        background: #ffffff;
+        box-shadow: 0 10px 25px rgba(15, 35, 68, 0.08);
+        font-size: 0.95rem;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .panel-header h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .panel-header span {
+        font-size: 0.82rem;
+        color: #6b768c;
+      }
+
+      /* TABLA */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        background: #ffffff;
+      }
+
+      thead {
+        background: #f3f4f6;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 8px 10px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      th {
+        font-weight: 600;
+        color: #374151;
+      }
+
+      tbody tr:hover {
+        background: #f9fafb;
+      }
+
+      .empty {
+        text-align: center;
+        padding: 16px 0;
+        color: #6b7280;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          margin: 16px;
+        }
+
+        table {
+          font-size: 0.85rem;
+        }
+
+        th,
+        td {
+          padding: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="activities-header">
+      <h1>Listado de actividades</h1>
+      <p>
+        Actividades organizadas con embarcación y patrón, incluyendo plazas
+        reservadas y precio total.
+      </p>
+    </div>
+
+    <div class="actions">
+      <a th:href="@{/}" class="button">← Volver al inicio</a>
+      <a th:href="@{/actividades/crear}" class="button primary"
+        >Nueva actividad</a
+      >
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Actividades previstas</h2>
+        <span th:text="${#lists.size(reservas)} + ' actividad(es) en total'">
+          0 actividad(es) en total
+        </span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Plazas reservadas</th>
+            <th>Descripción</th>
+            <th>Precio total (€)</th>
+            <th>Matrícula</th>
+            <th>DNI socio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="reserva : ${reservas}">
+            <td th:text="${reserva.id}">1</td>
+            <td th:text="${reserva.fecha}">2025-01-01T00:00</td>
+            <td th:text="${reserva.plazas_reservadas}">4</td>
+            <td th:text="${reserva.descripcion}">Comida en alta mar</td>
+            <td th:text="${reserva.precio_total}">160.0</td>
+            <td th:text="${reserva.matricula}">ABC-123</td>
+            <td th:text="${reserva.dni_socio}">12345678A</td>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(reservas)}">
+            <td colspan="7" class="empty">No hay actividades previstas.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

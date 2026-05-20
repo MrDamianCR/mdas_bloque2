@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gestión de Socios</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2a3c;
+        margin: 24px;
+      }
+
+      .muted {
+        color: #6b768c;
+        font-size: 0.92rem;
+      }
+
+      .socios-header {
+        background: linear-gradient(135deg, #0f5c9c, #1ca7ec);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+      }
+
+      .socios-header h1 {
+        margin: 0 0 4px;
+        font-size: 1.9rem;
+        color: #ffffff;
+      }
+
+      .socios-header p {
+        margin: 0;
+        color: #e5f2ff;
+        font-size: 0.95rem;
+      }
+
+      .actions {
+        margin: 10px 0 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      input[type="number"],
+      select {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        background: #ffffff;
+        transition: 0.2s;
+      }
+
+      input[type="text"]:focus,
+      input[type="date"]:focus,
+      input[type="number"]:focus,
+      select:focus {
+        outline: none;
+        border-color: #0a79df;
+        box-shadow: 0 0 0 2px rgba(10, 121, 223, 0.15);
+      }
+
+      button,
+      a.button {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: 0.25s;
+      }
+
+      button:hover,
+      a.button:hover {
+        border-color: #0a79df;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 35, 68, 0.12);
+      }
+
+      button.primary {
+        background: #0a79df;
+        color: #ffffff;
+        border-color: #0a79df;
+        box-shadow: 0 8px 20px rgba(10, 121, 223, 0.35);
+      }
+
+      button.primary:hover {
+        background: #0867bd;
+      }
+
+      form.inline {
+        display: inline;
+      }
+
+      .panel {
+        border: 1px solid rgba(10, 121, 223, 0.06);
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin-top: 16px;
+        background: #ffffff;
+        box-shadow: 0 10px 25px rgba(15, 35, 68, 0.08);
+        font-size: 0.95rem;
+      }
+
+      .panel-error {
+        background: #fff1f2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(15, 35, 68, 0.08);
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 0.93rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .right {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .badge {
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        border: 1px solid #e5e7eb;
+        display: inline-block;
+      }
+
+      .yes {
+        background: #ecfdf5;
+        color: #065f46;
+        border-color: #a7f3d0;
+      }
+
+      .no {
+        background: #fef2f2;
+        color: #7f1d1d;
+        border-color: #fecaca;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(220px, 1fr));
+        gap: 12px;
+      }
+
+      .grid > label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 0.9rem;
+      }
+
+
+      .row-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(160px, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          margin: 16px;
+        }
+
+        table {
+          font-size: 0.85rem;
+        }
+
+        th,
+        td {
+          padding: 8px 10px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="socios-header">
+      <h1>Gestión de Socios</h1>
+      <p>Listado, alta, edición y eliminación de socios del club.</p>
+    </div>
+
+
+    <div class="actions">
+      <a class="button" th:href="@{/}" style="font-size: 18px">←</a>
+      <a class="button" th:href="@{/socios/listar}">Refrescar lista</a>
+      <a class="button" th:href="@{/socios/patrones}">Ver solo patrones</a>
+
+      <form th:action="@{/socios/buscar}" method="get" class="row">
+        <input type="text" name="dni" placeholder="Buscar por DNI" />
+        <button type="submit">Buscar</button>
+      </form>
+    </div>
+
+    <div th:if="${mensaje}" class="panel" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="panel panel-error" th:text="${error}"></div>
+
+
+    <table>
+      <thead>
+        <tr>
+          <th>DNI</th>
+          <th>Nombre</th>
+          <th>Apellidos</th>
+          <th>Fecha nacimiento</th>
+          <th>Dirección</th>
+          <th>Fecha inscripción</th>
+          <th>Patrón</th>
+          <th>Id Inscripción</th>
+          <th>Rol</th>
+          <th class="right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="s : ${socios}">
+          <td th:text="${s.dni}">00000000A</td>
+          <td th:text="${s.nombre}">Nombre</td>
+          <td th:text="${s.apellidos}">Apellidos</td>
+          <td th:text="${s.fecha_nacimiento}">2000-01-01</td>
+          <td th:text="${s.direccion}">C/ Ejemplo 1</td>
+          <td th:text="${s.fecha_inscripcion}">2025-01-01</td>
+          <td>
+            <span
+              th:classappend="${s.es_patron} ? 'badge yes' : 'badge no'"
+              th:text="${s.es_patron} ? 'Sí' : 'No'"
+              >No</span
+            >
+          </td>
+          <td th:text="${s.id_inscripcion}">0</td>
+          <td th:text="${s.rol}">Titular</td>
+          <td class="right">
+            <a class="button" th:href="@{|/socios/editar/${s.dni}|}">Editar</a>
+
+            <form
+              class="inline"
+              th:action="@{/socios/eliminar}"
+              method="post"
+              onsubmit="return confirm('¿Eliminar al socio con DNI ' + this.dni.value + '?')"
+            >
+              <input type="hidden" name="dni" th:value="${s.dni}" />
+              <button type="submit">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        <tr th:if="${socios == null or #lists.isEmpty(socios)}">
+          <td colspan="9" class="muted">No hay socios que mostrar.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="panel">
+      <h2 style="margin-top: 0; margin-bottom: 10px">Registrar nuevo socio</h2>
+      <form th:action="@{/socios/registrar}" method="post">
+        <div class="grid">
+          <label>
+            DNI
+            <input type="text" name="dni" required />
+          </label>
+          <label>
+            Nombre
+            <input type="text" name="nombre" required />
+          </label>
+          <label>
+            Apellidos
+            <input type="text" name="apellidos" required />
+          </label>
+          <label>
+            Dirección
+            <input type="text" name="direccion" required />
+          </label>
+          <label>
+            Fecha de nacimiento
+            <input type="date" name="fecha_nacimiento" required />
+          </label>
+          <label>
+            Fecha de inscripción
+            <input type="date" name="fecha_inscripcion" required />
+          </label>
+
+
+          <label>
+            ¿Es patrón?
+            <div class="row-check">
+              <input type="checkbox" name="es_patron" />
+              <span class="muted">Marcar si el socio es patrón del club</span>
+            </div>
+          </label>
+
+          <label>
+            Inscripción
+            <select name="id_inscripcion" required>
+              <option value="">-- Selecciona inscripción --</option>
+              <option
+                th:each="ins : ${inscripciones}"
+                th:value="${ins.id}"
+                th:text="${ins.id + ' - ' + ins.tipo + ' (' + ins.fecha_creacion + ')'}"
+              ></option>
+            </select>
+          </label>
+
+          <label>
+            Rol
+            <select name="rol" required>
+              <option value="Titular">Titular</option>
+              <option value="Adulto_Adicional">Adulto adicional</option>
+              <option value="Hijo">Hijo</option>
+            </select>
+          </label>
+        </div>
+
+        <div style="margin-top: 14px">
+          <button type="submit" class="primary">Registrar</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
