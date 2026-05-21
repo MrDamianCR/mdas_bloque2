@@ -141,14 +141,11 @@ public class SocioController {
     private String validarReglasInscripcion(Socio socio) {
         Integer idInscripcion = socio.getId_inscripcion();
         if (idInscripcion == null) return null;
-
         Inscripcion inscripcion = inscripcionRepository.findInscripcionById(idInscripcion);
         if (inscripcion == null) {
             return "La inscripción con ID " + idInscripcion + " no existe.";
         }
-
         List<Socio> sociosInscripcion = socioRepository.findByInscripcionId(idInscripcion);
-
         // Validar inscripción individual
         if (inscripcion.getTipo() == InscripcionType.Individual) {
             boolean yaHayOtro = sociosInscripcion.stream()
@@ -157,7 +154,6 @@ public class SocioController {
                 return "La inscripción " + idInscripcion + " es INDIVIDUAL y ya tiene un socio asociado.";
             }
         }
-
         // Validar Titular único
         if (socio.getRol() == SocioRol.Titular) {
             boolean otroTitular = sociosInscripcion.stream()
@@ -167,7 +163,6 @@ public class SocioController {
             }
         }
 
-        // 
         if (socio.getRol() == SocioRol.Hijo || socio.getRol() == SocioRol.Adulto_Adicional) {
             boolean hayTitular = sociosInscripcion.stream().anyMatch(s -> s.getRol() == SocioRol.Titular);
             if (!hayTitular) {
