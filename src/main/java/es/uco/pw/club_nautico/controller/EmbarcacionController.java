@@ -14,6 +14,8 @@ import es.uco.pw.club_nautico.model.domain.Patron;
 import es.uco.pw.club_nautico.model.repository.EmbarcacionRepository;
 import es.uco.pw.club_nautico.model.repository.PatronRepository;
 
+// En este archivo se han hecho cambios en los comentarios, se han eliminado unos y modificado otros.
+
 @Controller
 @RequestMapping("/embarcaciones")
 public class EmbarcacionController {
@@ -44,7 +46,6 @@ public class EmbarcacionController {
         }
     }
 
-    // Listar todas las embarcaciones
     @GetMapping("/listar")
     public String listar(Model model, RedirectAttributes ra) {
         try {
@@ -62,7 +63,6 @@ public class EmbarcacionController {
         return "embarcaciones";
     }
 
-    // Mostrar formulario de edición
     @GetMapping("/editar/{matricula}")
     public String mostrarFormularioEdicion(@PathVariable("matricula") String matricula,
             Model model,
@@ -88,7 +88,6 @@ public class EmbarcacionController {
         }
     }
 
-    // Registrar nueva embarcación
     @PostMapping("/registrar")
     public String registrar(@ModelAttribute Embarcacion embarcacion, RedirectAttributes ra) {
         if (embarcacion == null || embarcacion.getMatricula() == null
@@ -114,7 +113,6 @@ public class EmbarcacionController {
         return "redirect:/embarcaciones/listar";
     }
 
-    // Actualizar embarcación
     @PostMapping("/actualizar")
     public String actualizar(@ModelAttribute("embarcacion") Embarcacion embarcacion,
             RedirectAttributes ra) {
@@ -141,7 +139,6 @@ public class EmbarcacionController {
         return "redirect:/embarcaciones/listar";
     }
 
-    // Eliminar embarcación
     @PostMapping("/eliminar")
     public String eliminar(@RequestParam("matricula") String matricula, RedirectAttributes ra) {
         if (matricula == null || matricula.isBlank()) {
@@ -172,7 +169,6 @@ public class EmbarcacionController {
         return "redirect:/embarcaciones/listar";
     }
 
-    // Buscar por matrícula
     @GetMapping("/buscar")
     public String buscarPorMatricula(@RequestParam(name = "matricula", required = false) String matricula,
             Model model,
@@ -200,7 +196,6 @@ public class EmbarcacionController {
         }
     }
 
-    // Buscar por tipo
     @GetMapping("/buscar-tipo")
     public String buscarPorTipo(@RequestParam(name = "tipo", required = false) String tipo,
             Model model,
@@ -227,7 +222,7 @@ public class EmbarcacionController {
         }
     }
 
-    // MOSTRAR FORMULARIO PARA ASIGNAR / CAMBIAR PATRÓN
+    // Mostrar formulario para asignar / cambiar patron
     @GetMapping("/asignar-patron/{matricula}")
     public String mostrarFormularioAsignarPatron(@PathVariable("matricula") String matricula,
             Model model,
@@ -260,7 +255,7 @@ public class EmbarcacionController {
         }
     }
 
-    // PROCESAR ASIGNACIÓN / CAMBIO DE PATRÓN
+    // Procesar asignacion / cambio de patron
     @PostMapping("/asignar-patron")
     public String asignarPatron(@RequestParam("matricula") String matricula,
             @RequestParam("dniPatronNuevo") String dniPatronNuevo,
