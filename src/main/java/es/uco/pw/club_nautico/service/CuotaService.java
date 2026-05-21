@@ -16,32 +16,19 @@ public class CuotaService {
     private final SocioRepository socioRepository;
     private final InscripcionRepository inscripcionRepository;
 
-    public CuotaService(SocioRepository socioRepository,
-            InscripcionRepository inscripcionRepository) {
+    public CuotaService(SocioRepository socioRepository, InscripcionRepository inscripcionRepository) {
         this.socioRepository = socioRepository;
         this.inscripcionRepository = inscripcionRepository;
     }
 
     public void recalcularCuota(Integer idInscripcion) {
-        if (idInscripcion == null)
-            return;
+        if (idInscripcion == null) return;
 
         List<Socio> socios = socioRepository.findByInscripcionId(idInscripcion);
 
-        int numTitulares = 0;
-        int numAdultosAdicionales = 0;
-        int numHijos = 0;
-
-        for (Socio s : socios) {
-            SocioRol rol = s.getRol();
-            if (rol == SocioRol.Titular) {
-                numTitulares++;
-            } else if (rol == SocioRol.Adulto_Adicional) {
-                numAdultosAdicionales++;
-            } else if (rol == SocioRol.Hijo) {
-                numHijos++;
-            }
-        }
+        long numTitulares = socios.stream().filter(s -> s.getRol() == SocioRol.Titular).count();
+        long numAdultosAdicionales = socios.stream().filter(s -> s.getRol() == SocioRol.Adulto_Adicional).count();
+        long numHijos = socios.stream().filter(s -> s.getRol() == SocioRol.Hijo).count();
 
         if (numTitulares == 0) {
             inscripcionRepository.updateCuotaYDniSocio(idInscripcion, 0.0, null);
@@ -49,8 +36,8 @@ public class CuotaService {
         }
 
         double cuota = 0.0;
-
         Inscripcion inscripcion = inscripcionRepository.findInscripcionById(idInscripcion);
+        
         if (inscripcion != null && inscripcion.getTipo() == InscripcionType.Individual) {
             cuota = 300.0;
         } else {
@@ -69,5 +56,4 @@ public class CuotaService {
 
         inscripcionRepository.updateCuotaYDniSocio(idInscripcion, cuota, dniTitular);
     }
-
 }

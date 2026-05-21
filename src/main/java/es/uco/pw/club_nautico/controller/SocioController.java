@@ -39,24 +39,103 @@ public class SocioController {
     @GetMapping("/listar")
     public String listar(Model model) {
         List<Socio> socios = socioRepository.findAllSocios();
-        List<Inscripcion> inscripcion = inscripcionRepository.findAllInscripciones();
+        List<Inscripcion> inscripciones = inscripcionRepository.findAllInscripciones();
         model.addAttribute("socios", socios);
-        model.addAttribute("inscripciones", inscripcion);
-        return "socios"; // templates/socios.html
+        model.addAttribute("inscripciones", inscripciones);
+        return "socios";
     }
 
     @GetMapping("/editar/{dni}")
-    public String mostrarFormularioEdicion(@PathVariable("dni") String dni, Model model, RedirectAttributes ra) {
+    public String mostrarFormularioEdicion(@PathVariable("dni") String dni, Model model, RedirectAttributes redirectAttributes) {
         Socio socio = socioRepository.findSocioByDni(dni);
         if (socio == null) {
-            ra.addFlashAttribute("error", "El socio con DNI " + dni + " no existe.");
+            redirectAttributes.addFlashAttribute("error", "El socio con DNI " + dni + " no existe.");
             return "redirect:/socios/listar";
         }
 
         List<Inscripcion> inscripciones = inscripcionRepository.findAllInscripciones();
         model.addAttribute("inscripciones", inscripciones);
         model.addAttribute("socio", socio);
-        return "editar_socio"; // templates/editar_socio.html
+        return "editar_socio";
+    }
+
+    @PostMapping("/registrar")
+    public String registrar(@ModelAttribute Socio socio, RedirectAttributes ra) {
+        
+        // 1. Llamamos al método extraído para validar las reglas de negocio
+        String errorValidacion = validarReglasInscripcion(socio);
+        if (errorValidacion != null) {
+            ra.addFlashAttribute("error", errorValidacion);
+            return "redirect:/socios/listar";
+        }
+
+        // 2. Si todo es correcto, registramos
+        boolean ok = socioRepository.addSocio(socio);
+        if (ok) {
+            if (socio.getId_inscripcion() != null && socio.getRol() == SocioRol.Titular) {
+                Inscripcion inscripcion = inscripcionRepository.findInscripcionById(socio.getId_inscripcion());
+                if (inscripcion != null && (inscripcion.getDni_socio() == null || inscripcion.getDni_socio().isBlank())) {
+                    inscripcion.setDni_socio(socio.getDni_socio());
+                    inscripcionRepository.updateInscripcion(inscripcion);
+                }
+            }
+            if (socio.isEs_patron()) {
+                patronRepository.addPatron(new Patron(
+                        socio.getDni_socio(), socio.getNombre(), socio.getApellidos(),
+                        socio.getFecha_nacimiento(), socio.getFecha_inscripcion()));
+            }
+
+            cuotaService.recalcularCuota(socio.getId_inscripcion());
+            ra.addFlashAttribute("mensaje", "Socio registrado correctamente.");
+        } else {
+            ra.addFlashAttribute("error", "No se pudo registrar el socio (¿DNI duplicado?).");
+        }
+        return "redirect:/socios/listar";
+    }
+
+    @PostMapping("/actualizar")
+    public String actualizar(@ModelAttribute("socio") Socio socio, RedirectAttributes ra) {
+        try {
+            Socio socioBD = socioRepository.findSocioByDni(socio.getDni_socio());
+            boolean eraPatron = (socioBD != null && socioBD.isEs_patron());
+
+            // 1. Llamamos al método extraído para validar las reglas de negocio
+            String errorValidacion = validarReglasInscripcion(socio);
+            if (errorValidacion != null) {
+                ra.addFlashAttribute("error", errorValidacion);
+                return "redirect:/socios/listar";
+            }
+
+            // 2. Actualizamos
+            boolean actualizado = socioRepository.updateSocio(socio);
+            if (actualizado) {
+                if (socio.getId_inscripcion() != null && socio.getRol() == SocioRol.Titular) {
+                    Inscripcion inscripcion = inscripcionRepository.findInscripcionById(socio.getId_inscripcion());
+                    if (inscripcion != null && (inscripcion.getDni_socio() == null || inscripcion.getDni_socio().isBlank())) {
+                        inscripcion.setDni_socio(socio.getDni_socio());
+                        inscripcionRepository.updateInscripcion(inscripcion);
+                    }
+                }   
+  
+                boolean esPatronAhora = socio.isEs_patron();
+                if (!eraPatron && esPatronAhora) {
+                    patronRepository.addPatron(new Patron(socio.getDni_socio(), socio.getNombre(), socio.getApellidos(), socio.getFecha_nacimiento(), socio.getFecha_inscripcion()));
+                } else if (eraPatron && !esPatronAhora) {
+                    patronRepository.deletePatron(socio.getDni_socio());
+                } else if (eraPatron && esPatronAhora) {
+                    patronRepository.updatePatron(new Patron(socio.getDni_socio(), socio.getNombre(), socio.getApellidos(), socio.getFecha_nacimiento(), socio.getFecha_inscripcion()));
+                }
+
+                cuotaService.recalcularCuota(socio.getId_inscripcion());
+                ra.addFlashAttribute("mensaje", "Socio actualizado correctamente.");
+            } else {
+                ra.addFlashAttribute("error", "No se pudo actualizar el socio con DNI " + socio.getDni_socio());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ra.addFlashAttribute("error", "Error interno al actualizar el socio.");
+        }
+        return "redirect:/socios/listar";
     }
 
     private String validarReglasInscripcion(Socio socio) {
@@ -88,41 +167,39 @@ public class SocioController {
             }
         }
 
-        // Validar que los dependientes tengan un Titular
+        // 
         if (socio.getRol() == SocioRol.Hijo || socio.getRol() == SocioRol.Adulto_Adicional) {
             boolean hayTitular = sociosInscripcion.stream().anyMatch(s -> s.getRol() == SocioRol.Titular);
-            // Si el socio que estamos actualizando ES el titular y lo estamos cambiando a Hijo, fallaría. 
-            // Para simplificar, verificamos si hay algún titular registrado:
             if (!hayTitular) {
                 return "La inscripción " + idInscripcion + " aún no tiene Titular. Primero debes dar de alta un TITULAR.";
             }
         }
         
-        return null; // Todo correcto
+        return null;
     }
 
     @PostMapping("/eliminar")
-    public String eliminar(@RequestParam("dni") String dni, RedirectAttributes ra) {
+    public String eliminar(@RequestParam("dni") String dni, RedirectAttributes redirectAttributes) {
         Socio socio = socioRepository.findSocioByDni(dni);
         if (socio != null) {
             boolean ok = socioRepository.deleteSocio(dni);
             if (ok) {
                 cuotaService.recalcularCuota(socio.getId_inscripcion());
-                ra.addFlashAttribute("mensaje", "Socio eliminado correctamente.");
-            } else
-                ra.addFlashAttribute("error", "No se pudo eliminar el socio con DNI: " + dni);
-
+                redirectAttributes.addFlashAttribute("mensaje", "Socio eliminado correctamente.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el socio con DNI: " + dni);
+            }
         } else {
-            ra.addFlashAttribute("error", "No se pudo eliminar el socio con DNI " + dni);
+            redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el socio con DNI " + dni);
         }
         return "redirect:/socios/listar";
     }
 
     @GetMapping("/patrones")
-    public String listarPatrones(Model model, RedirectAttributes ra) {
+    public String listarPatrones(Model model, RedirectAttributes redirectAttributes) {
         var lista = socioRepository.findSociosPatron();
         if (lista == null || lista.isEmpty()) {
-            ra.addFlashAttribute("mensaje", "No hay socios con rol Patrón.");
+            redirectAttributes.addFlashAttribute("mensaje", "No hay socios con rol Patrón.");
             return "redirect:/socios/listar";
         }
         model.addAttribute("socios", lista);
@@ -132,14 +209,14 @@ public class SocioController {
     @GetMapping("/buscar")
     public String buscarPorDni(@RequestParam(name = "dni", required = false) String dni,
             Model model,
-            RedirectAttributes ra) {
+            RedirectAttributes redirectAttributes) {
         if (dni == null || dni.isBlank()) {
-            ra.addFlashAttribute("error", "Introduce un DNI para buscar.");
+            redirectAttributes.addFlashAttribute("error", "Introduce un DNI para buscar.");
             return "redirect:/socios/listar";
         }
         var socio = socioRepository.findSocioByDni(dni);
         if (socio == null) {
-            ra.addFlashAttribute("mensaje", "No se encontró ningún socio con DNI " + dni + ".");
+            redirectAttributes.addFlashAttribute("mensaje", "No se encontró ningún socio con DNI " + dni + ".");
             return "redirect:/socios/listar";
         }
 
@@ -151,4 +228,5 @@ public class SocioController {
     public String root() {
         return "redirect:/socios/listar";
     }
+
 }
