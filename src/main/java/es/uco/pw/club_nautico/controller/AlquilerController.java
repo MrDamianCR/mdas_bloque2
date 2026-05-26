@@ -24,13 +24,7 @@ public class AlquilerController {
     private final EmbarcacionRepository embarcacionRepo;
     private final AlquilerService alquilerService;
 
-<<<<<<< Updated upstream
     public AlquilerController(AlquilerRepository alquilerRepo, EmbarcacionRepository embarcacionRepo, AlquilerService alquilerService) {
-=======
-    public AlquilerController(AlquilerRepository alquilerRepo,
-            EmbarcacionRepository embarcacionRepo,
-            AlquilerService alquilerService) {
->>>>>>> Stashed changes
         this.alquilerRepo = alquilerRepo;
         this.embarcacionRepo = embarcacionRepo;
         this.alquilerService = alquilerService;
@@ -56,10 +50,6 @@ public class AlquilerController {
         if (inicioDisp != null && finDisp != null) {
             List<Embarcacion> disponibles = alquilerService.buscarEmbarcacionesPorFecha(inicioDisp, finDisp);
             model.addAttribute("disponibles", disponibles);
-<<<<<<< Updated upstream
-=======
-            System.out.println("[DEBUG] disponibles.size() = " + disponibles.size());
->>>>>>> Stashed changes
         }
 
         return "formulario_alquiler";
@@ -80,41 +70,9 @@ public class AlquilerController {
             RedirectAttributes redirectAttributes) {
 
         try {
-<<<<<<< Updated upstream
+            // REFACTORIZACIÓN (Semana 5): Aplicada regla Move Behavior to Service. El controlador delega la lógica de negocio al servicio.
             alquilerService.alquilar(matricula, dniSocio, plazas, fecha_inicio, fecha_fin);
             redirectAttributes.addFlashAttribute("ok", "Alquiler creado correctamente.");
-=======
-            // fin exclusiva
-            LocalDate finExclusiva = fecha_fin.plusDays(1);
-
-            // Comprueba si se solapan las fechas con otro alquiler
-            int solapes = alquilerRepo.contarSolapes(matricula, fecha_inicio, fecha_fin);
-            if (solapes > 0) {
-                ra.addFlashAttribute("error",
-                        "La embarcación con matrícula " + matricula +
-                                " ya está reservada en las fechas seleccionadas.");
-                return "redirect:/alquiler/crear";
-            }
-
-            // Comprueba que no se pase del numero de plazas
-            Embarcacion embarcacion = embarcacionRepo.findEmbarcacionByMatricula(matricula);
-            if (plazas > embarcacion.getNumeroPlazas()) {
-                ra.addFlashAttribute("error",
-                        "La embarcación solo tiene " + embarcacion.getNumeroPlazas() +
-                                " plazas, no se pueden reservar " + plazas + ".");
-                return "redirect:/alquiler/crear";
-            }
-
-            alquilerRepo.insertar(
-                    fecha_inicio,
-                    finExclusiva,
-                    plazas,
-                    matricula,
-                    dniSocio);
-
-            ra.addFlashAttribute("ok", "Alquiler creado correctamente.");
-            // después de crear, vamos a la lista
->>>>>>> Stashed changes
             return "redirect:/alquiler/listar";
 
         } catch (IllegalArgumentException | IllegalStateException ex) {

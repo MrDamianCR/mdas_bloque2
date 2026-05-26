@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ActividadService {
-
+    // REFACTORIZACIÓN (Semana 5): Aplicada regla Replace Magic Number with Symbolic Constant para centralizar el precio.
     private static final float PRECIO_POR_PERSONA_ACTIVIDAD = 40.0f;
 
     private final SocioRepository socioRepository;

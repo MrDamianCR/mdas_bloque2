@@ -26,6 +26,7 @@ public class CuotaService {
 
         List<Socio> socios = socioRepository.findByInscripcionId(idInscripcion);
 
+        // REFACTORIZACIÓN (Semana 4): Aplicada regla Replace Loop with Pipeline usando Streams para mejorar la expresividad y evitar mutabilidad.
         long numTitulares = socios.stream().filter(s -> s.getRol() == SocioRol.Titular).count();
         long numAdultosAdicionales = socios.stream().filter(s -> s.getRol() == SocioRol.Adulto_Adicional).count();
         long numHijos = socios.stream().filter(s -> s.getRol() == SocioRol.Hijo).count();

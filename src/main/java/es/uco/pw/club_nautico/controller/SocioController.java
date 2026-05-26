@@ -62,7 +62,7 @@ public class SocioController {
     @PostMapping("/registrar")
     public String registrar(@ModelAttribute Socio socio, RedirectAttributes ra) {
         
-        // 1. Llamamos al método extraído para validar las reglas de negocio
+        // REFACTORIZACIÓN (Semana 4): Aplicada regla Extract Method para evitar código duplicado en las validaciones.
         String errorValidacion = validarReglasInscripcion(socio);
         if (errorValidacion != null) {
             ra.addFlashAttribute("error", errorValidacion);
